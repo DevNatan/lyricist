@@ -1,8 +1,9 @@
-package cafe.adriel.lyricist.processor.xml.internal
+package cafe.adriel.lyricist.processor.internal
 
-internal data class LyricistXmlConfig(
+public data class LyricistConfig(
     val packageName: String,
     val moduleName: String,
+    val internalVisibility: Boolean,
     val defaultLanguageTag: String,
     val resourcesPath: String,
 )

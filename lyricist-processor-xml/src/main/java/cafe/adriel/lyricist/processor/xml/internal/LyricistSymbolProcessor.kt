@@ -1,5 +1,6 @@
 package cafe.adriel.lyricist.processor.xml.internal
 
+import cafe.adriel.lyricist.processor.internal.LyricistConfig
 import cafe.adriel.lyricist.processor.xml.internal.ktx.INDENTATION
 import cafe.adriel.lyricist.processor.xml.internal.ktx.filterXmlStringFiles
 import cafe.adriel.lyricist.processor.xml.internal.ktx.formatted
@@ -17,8 +18,8 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import java.io.File
 
-internal class LyricistXmlSymbolProcessor(
-    private val config: LyricistXmlConfig,
+internal class LyricistSymbolProcessor(
+    private val config: LyricistConfig,
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger
 ) : SymbolProcessor {
