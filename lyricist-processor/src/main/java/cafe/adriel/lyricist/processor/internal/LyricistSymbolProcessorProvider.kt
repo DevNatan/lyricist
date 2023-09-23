@@ -8,7 +8,10 @@ import kotlin.reflect.full.primaryConstructor
 internal class LyricistSymbolProcessorProvider : SymbolProcessorProvider {
 
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor = with(environment) {
-        findProcessorForCurrentPlatform(createConfig())
+        val config = createConfig()
+        val processors = findProcessorsForCurrentPlatform(config)
+
+        LyricistSymbolProcessor(processors)
     }
 
     private fun SymbolProcessorEnvironment.createConfig() = LyricistConfig(
@@ -44,25 +47,33 @@ internal class LyricistSymbolProcessorProvider : SymbolProcessorProvider {
         return options.getOrDefault(nonDeprecatedKey, defaultValue)
     }
 
-    private fun SymbolProcessorEnvironment.findProcessorForCurrentPlatform(config: LyricistConfig): SymbolProcessor {
-        val symbolProcessor = try {
-            Class.forName(SYMBOL_PROCESSOR_PATH)
-        } catch (exception: ClassNotFoundException) {
-            print("symbol processor not found")
-            throw exception
+    private fun SymbolProcessorEnvironment.findProcessorsForCurrentPlatform(config: LyricistConfig): List<SymbolProcessor> {
+        val foundProcessors = mutableListOf<SymbolProcessor>()
+        knownProcessors.forEach { processorName ->
+            val className = SYMBOL_PROCESSOR_PATH.format(processorName.replaceFirstChar(Char::uppercaseChar))
+            val processorClass = try {
+                Class.forName(className)
+            } catch (_: ClassNotFoundException) {
+                logger.logging("Processor $className not found")
+                return@forEach
+            }
+
+            val constructor = requireNotNull(processorClass.kotlin.primaryConstructor) {
+                "Missing primary constructor(LyricistConfig, CodeGenerator, Logger) @ $processorClass"
+            }
+            val symbolProcessor = constructor.call(config, codeGenerator, logger) as SymbolProcessor
+
+            foundProcessors.add(symbolProcessor)
+            logger.info("Processor $symbolProcessor loaded")
         }
 
-        println("symbolProcessor = $symbolProcessor")
-
-        return symbolProcessor.kotlin.primaryConstructor?.call(
-            config,
-            codeGenerator,
-            logger
-        ) as SymbolProcessor
+        return foundProcessors.toList()
     }
 
     private companion object {
-        const val SYMBOL_PROCESSOR_PATH = "cafe.adriel.lyricist.processor.LyricistSymbolProcessor"
+        val knownProcessors = listOf("compose", "xml")
+
+        const val SYMBOL_PROCESSOR_PATH = "cafe.adriel.lyricist.processor.Lyricist%sSymbolProcessor"
 
         // Common Options
         const val PACKAGE_NAME = "lyricist.packageName"
