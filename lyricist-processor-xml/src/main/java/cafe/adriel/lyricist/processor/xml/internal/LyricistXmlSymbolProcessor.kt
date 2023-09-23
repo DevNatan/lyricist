@@ -18,7 +18,7 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.symbol.KSAnnotated
 import java.io.File
 
-internal class LyricistSymbolProcessor(
+internal class LyricistXmlSymbolProcessor(
     private val config: LyricistConfig,
     private val codeGenerator: CodeGenerator,
     private val logger: KSPLogger
