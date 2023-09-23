@@ -13,6 +13,7 @@ include(
     ":lyricist-processor",
     ":lyricist-processor-compose",
     ":lyricist-processor-xml",
+    ":lyricist-processor-properties",
 
     ":sample",
     ":sample-xml",

@@ -71,7 +71,7 @@ internal class LyricistSymbolProcessorProvider : SymbolProcessorProvider {
     }
 
     private companion object {
-        val knownProcessors = listOf("compose", "xml")
+        val knownProcessors = listOf("compose", "xml", "properties")
 
         const val SYMBOL_PROCESSOR_PATH = "cafe.adriel.lyricist.processor.Lyricist%sSymbolProcessor"
 
