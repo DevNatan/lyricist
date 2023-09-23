@@ -85,7 +85,7 @@ kotlin {
 
 
 dependencies {
-    add("kspCommonMainMetadata", project(":lyricist-processor"))
+    add("kspCommonMainMetadata", project(":lyricist-processor-compose"))
 }
 
 // workaround for KSP only in Common Main.

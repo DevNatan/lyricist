@@ -9,7 +9,7 @@ ksp {
 
 dependencies {
     implementation(project(":lyricist"))
-    ksp(project(":lyricist-processor"))
+    ksp(project(":lyricist-processor-compose"))
 
     implementation libs.compose.runtime
     implementation libs.compose.ui.text
