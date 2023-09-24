@@ -23,7 +23,6 @@ internal class LyricistSymbolProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor = with(environment) {
         val config = createConfig()
         val processors = findProcessorsForCurrentPlatform(config)
-        environment.logger.warn("pirocao = $processors")
 
         LyricistSymbolProcessor(processors)
     }
@@ -52,8 +51,10 @@ internal class LyricistSymbolProcessorProvider : SymbolProcessorProvider {
     ): String {
         val value = options[deprecatedKey]
         if (value != null) {
-            logger.warn("Lyricist KSP argument \"$deprecatedKey\" is deprecated, " +
-                    "use \"$nonDeprecatedKey\" instead.")
+            logger.warn(
+                "Lyricist KSP argument \"$deprecatedKey\" is deprecated, " +
+                    "use \"$nonDeprecatedKey\" instead."
+            )
             return value
         }
 

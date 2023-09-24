@@ -6,5 +6,6 @@ plugins {
 
 dependencies {
     add("implementation", libs.ksp)
+    add("implementation", libs.caseFormat)
     add("api", project(":lyricist-processor"))
 }
