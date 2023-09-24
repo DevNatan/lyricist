@@ -2,10 +2,12 @@ package cafe.adriel.lyricist.processor.internal
 
 import cafe.adriel.lyricist.processor.internal.ProcessorOptions.DEFAULT_LANGUAGE_TAG
 import cafe.adriel.lyricist.processor.internal.ProcessorOptions.DEFAULT_PACKAGE_NAME
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.DEFAULT_RESOURCES_FILENAME_FORMAT
 import cafe.adriel.lyricist.processor.internal.ProcessorOptions.INTERNAL_VISIBILITY
 import cafe.adriel.lyricist.processor.internal.ProcessorOptions.LANGUAGE_TAG
 import cafe.adriel.lyricist.processor.internal.ProcessorOptions.MODULE_NAME
 import cafe.adriel.lyricist.processor.internal.ProcessorOptions.PACKAGE_NAME
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.RESOURCES_FILENAME_FORMAT
 import cafe.adriel.lyricist.processor.internal.ProcessorOptions.RESOURCES_PATH
 import cafe.adriel.lyricist.processor.internal.ProcessorOptions.SYMBOL_PROCESSOR_PATH
 import cafe.adriel.lyricist.processor.internal.ProcessorOptions.XML_DEFAULT_LANGUAGE_TAG
@@ -40,6 +42,7 @@ internal class LyricistSymbolProcessorProvider : SymbolProcessorProvider {
             nonDeprecatedKey = RESOURCES_PATH,
             defaultValue = "",
         ),
+        resourcesFilenameFormat = options.getOrDefault(RESOURCES_FILENAME_FORMAT, DEFAULT_RESOURCES_FILENAME_FORMAT)
     )
 
     private fun SymbolProcessorEnvironment.getOptionAndWarnIfDeprecated(

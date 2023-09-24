@@ -6,6 +6,7 @@ public data class LyricistConfig(
     val internalVisibility: Boolean,
     val defaultLanguageTag: String,
     val resourcesPath: String,
+    val resourcesFilenameFormat: String,
 )
 
 public val LyricistConfig.resourcesPathOrThrow: String get() {
