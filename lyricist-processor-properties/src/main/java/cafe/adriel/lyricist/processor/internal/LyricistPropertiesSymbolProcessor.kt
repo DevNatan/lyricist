@@ -14,6 +14,7 @@ internal class LyricistPropertiesSymbolProcessor(
 ) : SymbolProcessor {
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
+        val resourcesPath = config.resourcesPathOrThrow
         TODO("Properties files not supported")
     }
 }

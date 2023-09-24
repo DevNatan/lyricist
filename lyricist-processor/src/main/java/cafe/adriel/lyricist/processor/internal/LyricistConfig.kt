@@ -7,3 +7,11 @@ public data class LyricistConfig(
     val defaultLanguageTag: String,
     val resourcesPath: String,
 )
+
+public val LyricistConfig.resourcesPathOrThrow: String get() {
+    require(resourcesPath.isNotEmpty()) {
+        "Lyricist KSP option ${ProcessorOptions.RESOURCES_PATH} must be defined for XML and Properties processor"
+    }
+
+    return resourcesPath
+}

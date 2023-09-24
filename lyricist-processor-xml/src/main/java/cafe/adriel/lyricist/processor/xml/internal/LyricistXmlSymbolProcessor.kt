@@ -1,6 +1,7 @@
 package cafe.adriel.lyricist.processor.xml.internal
 
 import cafe.adriel.lyricist.processor.internal.LyricistConfig
+import cafe.adriel.lyricist.processor.internal.resourcesPathOrThrow
 import cafe.adriel.lyricist.processor.xml.internal.ktx.INDENTATION
 import cafe.adriel.lyricist.processor.xml.internal.ktx.filterXmlStringFiles
 import cafe.adriel.lyricist.processor.xml.internal.ktx.formatted
@@ -27,7 +28,7 @@ internal class LyricistXmlSymbolProcessor(
     private val strings = mutableMapOf<LanguageTag, StringResources>()
 
     override fun process(resolver: Resolver): List<KSAnnotated> {
-        strings += File(config.resourcesPath)
+        strings += File(config.resourcesPathOrThrow)
             .walk()
             .filterXmlStringFiles()
             .groupBy { file ->

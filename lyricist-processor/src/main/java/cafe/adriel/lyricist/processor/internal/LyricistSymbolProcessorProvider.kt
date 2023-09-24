@@ -1,5 +1,16 @@
 package cafe.adriel.lyricist.processor.internal
 
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.DEFAULT_LANGUAGE_TAG
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.DEFAULT_PACKAGE_NAME
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.INTERNAL_VISIBILITY
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.LANGUAGE_TAG
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.MODULE_NAME
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.PACKAGE_NAME
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.RESOURCES_PATH
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.SYMBOL_PROCESSOR_PATH
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.XML_DEFAULT_LANGUAGE_TAG
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.XML_RESOURCES_PATH
+import cafe.adriel.lyricist.processor.internal.ProcessorOptions.availableProcessors
 import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.processing.SymbolProcessorProvider
@@ -10,6 +21,7 @@ internal class LyricistSymbolProcessorProvider : SymbolProcessorProvider {
     override fun create(environment: SymbolProcessorEnvironment): SymbolProcessor = with(environment) {
         val config = createConfig()
         val processors = findProcessorsForCurrentPlatform(config)
+        environment.logger.warn("pirocao = $processors")
 
         LyricistSymbolProcessor(processors)
     }
@@ -27,9 +39,7 @@ internal class LyricistSymbolProcessorProvider : SymbolProcessorProvider {
             deprecatedKey = XML_RESOURCES_PATH,
             nonDeprecatedKey = RESOURCES_PATH,
             defaultValue = "",
-        ).ifEmpty {
-            throw IllegalArgumentException("Lyricist KSP argument \"$RESOURCES_PATH\" or \"$XML_RESOURCES_PATH\" not found")
-        },
+        ),
     )
 
     private fun SymbolProcessorEnvironment.getOptionAndWarnIfDeprecated(
@@ -49,12 +59,12 @@ internal class LyricistSymbolProcessorProvider : SymbolProcessorProvider {
 
     private fun SymbolProcessorEnvironment.findProcessorsForCurrentPlatform(config: LyricistConfig): List<SymbolProcessor> {
         val foundProcessors = mutableListOf<SymbolProcessor>()
-        knownProcessors.forEach { processorName ->
+        availableProcessors.forEach { processorName ->
             val className = SYMBOL_PROCESSOR_PATH.format(processorName.replaceFirstChar(Char::uppercaseChar))
             val processorClass = try {
                 Class.forName(className)
             } catch (_: ClassNotFoundException) {
-                logger.logging("Processor $className not found")
+                logger.warn("Processor $className not found")
                 return@forEach
             }
 
@@ -64,29 +74,9 @@ internal class LyricistSymbolProcessorProvider : SymbolProcessorProvider {
             val symbolProcessor = constructor.call(config, codeGenerator, logger) as SymbolProcessor
 
             foundProcessors.add(symbolProcessor)
-            logger.info("Processor $symbolProcessor loaded")
+            logger.warn("Processor $symbolProcessor loaded")
         }
 
         return foundProcessors.toList()
-    }
-
-    private companion object {
-        val knownProcessors = listOf("compose", "xml", "properties")
-
-        const val SYMBOL_PROCESSOR_PATH = "cafe.adriel.lyricist.processor.Lyricist%sSymbolProcessor"
-
-        // Common Options
-        const val PACKAGE_NAME = "lyricist.packageName"
-        const val MODULE_NAME = "lyricist.moduleName"
-        const val INTERNAL_VISIBILITY = "lyricist.internalVisibility"
-        const val LANGUAGE_TAG = "lyricist.defaultLanguageTag"
-        const val RESOURCES_PATH = "lyricist.resourcesPath"
-
-        const val DEFAULT_PACKAGE_NAME = "cafe.adriel.lyricist"
-        const val DEFAULT_LANGUAGE_TAG = "en"
-
-        // XML Processor options
-        const val XML_RESOURCES_PATH = "lyricist.xml.resourcesPath"
-        const val XML_DEFAULT_LANGUAGE_TAG = "lyricist.xml.defaultLanguageTag"
     }
 }
